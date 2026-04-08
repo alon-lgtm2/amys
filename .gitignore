@@ -1,0 +1,4 @@
+.tmp.driveupload/
+node_modules/
+.firebase/
+*.log

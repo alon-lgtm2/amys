@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amy's Salon - הצעה לליווי עסקי | Gildoni Consultancy</title>
+<meta property="og:title" content="Amy's Salon - הצעה לליווי עסקי">
+<meta property="og:description" content="ליווי עסקי מקצה לקצה. מותאם במיוחד עבור עירן ודניאלה.">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Heebo:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Heebo',sans-serif;color:#2d2a26;background:#f8f3eb;background-image:repeating-linear-gradient(transparent 0px,transparent 31px,rgba(160,145,120,0.10) 31px,rgba(160,145,120,0.10) 32px);background-size:100% 32px;background-attachment:fixed;min-height:100vh;line-height:1.75;-webkit-font-smoothing:antialiased;font-size:16px}
+body::after{content:'';position:fixed;top:0;right:0;width:72px;height:100%;border-left:2px solid rgba(196,120,110,0.15);pointer-events:none;z-index:50}
+
+/* ── Auth Gate ── */
+#auth-gate{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+#auth-gate .auth-card{background:rgba(255,255,255,0.6);border:1px solid rgba(0,0,0,0.08);border-radius:8px;padding:48px 40px;max-width:420px;width:100%;text-align:center;position:relative;backdrop-filter:blur(8px)}
+#auth-gate .auth-card::before{content:'';position:absolute;top:-6px;right:32px;width:48px;height:12px;background:rgba(196,105,74,0.2);border-radius:1px;transform:rotate(-1deg)}
+#auth-gate .auth-card h1{font-family:'Frank Ruhl Libre',serif;font-size:1.8rem;font-weight:700;color:#2d2a26;margin-bottom:8px}
+#auth-gate .auth-card .subtitle{font-family:'Caveat',cursive;font-size:1.1rem;color:#c4694a;margin-bottom:28px}
+#auth-gate .auth-card p{font-size:0.9rem;color:#7a7468;line-height:1.8;margin-bottom:24px}
+#auth-gate .auth-card .google-btn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:#2d2a26;border:1px solid rgba(0,0,0,0.12);border-radius:6px;padding:12px 24px;font-family:'Heebo',sans-serif;font-size:0.95rem;font-weight:500;cursor:pointer;transition:all 0.2s ease;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+#auth-gate .auth-card .google-btn:hover{background:#fafafa;box-shadow:0 2px 8px rgba(0,0,0,0.12);transform:translateY(-1px)}
+#auth-gate .auth-card .google-btn svg{flex-shrink:0}
+#auth-gate .auth-card .error-msg{color:#c0392b;font-size:0.85rem;margin-top:16px;display:none}
+#auth-gate .auth-card .loading{color:#a09888;font-size:0.85rem;margin-top:16px;display:none}
+.auth-user-bar{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(0,0,0,0.06);padding:8px 24px;display:flex;justify-content:space-between;align-items:center;z-index:100;font-size:0.82rem;color:#7a7468}
+.auth-user-bar .user-info{display:flex;align-items:center;gap:8px}
+.auth-user-bar .user-info img{width:24px;height:24px;border-radius:50%}
+.auth-user-bar button{background:none;border:1px solid rgba(0,0,0,0.1);border-radius:4px;padding:4px 12px;font-family:'Heebo',sans-serif;font-size:0.78rem;color:#7a7468;cursor:pointer;transition:all 0.2s}
+.auth-user-bar button:hover{background:rgba(0,0,0,0.04)}
+
+/* ── Proposal content (hidden until auth) ── */
+#proposal-content{display:none}
+
+/* ── Proposal styles ── */
+.section{max-width:820px;margin:0 auto;padding:0 28px 0 100px}
+.section-heading{margin-bottom:40px}
+.section-heading .label{display:inline-block;font-family:'Caveat',cursive;font-size:1.1rem;font-weight:600;color:#c4694a;margin-bottom:10px}
+.section-heading h2{font-family:'Frank Ruhl Libre',serif;font-size:2rem;font-weight:700;color:#2d2a26;margin-bottom:12px;line-height:1.35;position:relative;display:inline-block}
+.section-heading h2::after{content:'';position:absolute;bottom:-4px;right:0;width:100%;height:3px;background:linear-gradient(90deg,#c4694a,rgba(196,105,74,0.1));border-radius:2px}
+.section-heading p{font-size:0.95rem;color:#7a7468;max-width:600px;line-height:1.9;margin-top:16px}
+.divider{max-width:820px;margin:64px auto;padding:0 28px 0 100px}
+.divider-line{height:0;border-bottom:1px dashed rgba(0,0,0,0.1)}
+.hero{padding:100px 28px 40px 100px;max-width:820px;margin:0 auto}
+.hero .draft{font-family:'Caveat',cursive;font-size:1rem;color:rgba(196,105,74,0.5);margin-bottom:20px;transform:rotate(-2deg);display:inline-block}
+.hero h1{font-family:'Frank Ruhl Libre',serif;font-size:2.8rem;font-weight:900;line-height:1.25;margin-bottom:16px;color:#2d2a26}
+.hero .sub{font-size:1.05rem;color:#6a6050;line-height:1.9;margin-bottom:16px;max-width:600px}
+.hero .meta{font-size:0.82rem;color:#a09888;margin-top:28px;display:flex;gap:20px;flex-wrap:wrap}
+.hero .meta span{display:flex;align-items:center;gap:6px}
+.hero .meta span::before{content:'';display:inline-block;width:4px;height:4px;background:#c4694a;border-radius:50%}
+.hero .meta span:first-child::before{display:none}
+.notes-box{background:rgba(255,255,255,0.5);border:1px solid rgba(0,0,0,0.06);border-radius:4px;padding:32px;margin-top:32px;position:relative}
+.notes-box::before{content:'';position:absolute;top:-6px;right:32px;width:48px;height:12px;background:rgba(196,105,74,0.2);border-radius:1px;transform:rotate(-1deg)}
+.notes-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(0,0,0,0.06)}
+.notes-header h3{font-family:'Frank Ruhl Libre',serif;font-size:1.15rem;font-weight:700;color:#2d2a26}
+.notes-header .date{font-family:'Caveat',cursive;font-size:0.95rem;color:#a09888}
+.notes-list{list-style:none;display:flex;flex-direction:column;gap:12px}
+.notes-list li{font-size:0.9rem;color:#4a4538;line-height:1.75;padding-right:24px;position:relative}
+.notes-list li::before{content:'-';position:absolute;right:0;top:0;color:#c4694a;font-weight:700}
+.notes-list li strong{color:#2d2a26;font-weight:600}
+.margin-note{font-family:'Caveat',cursive;font-size:0.95rem;color:rgba(196,105,74,0.6);transform:rotate(-2deg);margin-top:16px;display:inline-block}
+.person-box{background:rgba(255,255,255,0.5);border:1px solid rgba(0,0,0,0.06);border-radius:4px;padding:28px;margin-bottom:16px}
+.person-box h3{font-family:'Frank Ruhl Libre',serif;font-size:1.1rem;font-weight:700;color:#2d2a26;margin-bottom:10px}
+.person-box p{font-size:0.88rem;color:#4a4538;line-height:1.8}
+.person-box .quote{font-family:'Caveat',cursive;font-size:1.05rem;color:#c4694a;margin-top:10px;display:block}
+.callout{background:rgba(196,105,74,0.04);border:1px dashed rgba(196,105,74,0.2);border-radius:4px;padding:20px 24px;margin-top:24px;font-size:0.88rem;color:#6a6050;line-height:1.8}
+.callout strong{color:#2d2a26}
+.callout.green{background:rgba(58,125,85,0.04);border-color:rgba(58,125,85,0.2)}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+.stat-card{background:rgba(255,255,255,0.5);border:1px solid rgba(0,0,0,0.05);border-radius:4px;padding:20px;text-align:center}
+.stat-card .num{font-family:'Frank Ruhl Libre',serif;font-size:1.8rem;font-weight:700;color:#c4694a;line-height:1.1}
+.stat-card .lbl{font-size:0.78rem;color:#7a7468;margin-top:6px}
+.pillar-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
+.pillar{background:rgba(255,255,255,0.5);border:1px solid rgba(0,0,0,0.05);border-radius:4px;padding:24px;transition:all 0.3s ease}
+.pillar:hover{background:rgba(255,255,255,0.8);border-color:rgba(0,0,0,0.1)}
+.pillar .p-num{font-family:'Caveat',cursive;font-size:1.4rem;font-weight:700;color:#c4694a;margin-bottom:4px}
+.pillar h3{font-family:'Frank Ruhl Libre',serif;font-size:1.05rem;font-weight:700;color:#2d2a26;margin-bottom:6px}
+.pillar p{font-size:0.84rem;color:#6a6050;line-height:1.7}
+.timeline-track{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:32px;position:relative}
+.timeline-track::before{content:'';position:absolute;top:28px;right:60px;left:60px;height:2px;background:linear-gradient(90deg,#c4694a,#d4a853,#3a7d55);opacity:0.25;border-radius:2px}
+.tl-step{text-align:center;position:relative}
+.tl-dot{width:14px;height:14px;border-radius:50%;background:#c4694a;margin:22px auto 14px;position:relative;z-index:1;box-shadow:0 0 0 3px rgba(196,105,74,0.12)}
+.tl-step:nth-child(2) .tl-dot{background:#d4a853;box-shadow:0 0 0 3px rgba(212,168,83,0.12)}
+.tl-step:nth-child(3) .tl-dot{background:#3a7d55;box-shadow:0 0 0 3px rgba(58,125,85,0.12)}
+.tl-week{font-family:'Caveat',cursive;font-size:0.9rem;font-weight:700;color:#c4694a}
+.tl-step:nth-child(2) .tl-week{color:#d4a853}
+.tl-step:nth-child(3) .tl-week{color:#3a7d55}
+.tl-title{font-family:'Frank Ruhl Libre',serif;font-size:1rem;font-weight:700;color:#2d2a26;margin-bottom:4px}
+.tl-desc{font-size:0.8rem;color:#7a7468;line-height:1.7;max-width:220px;margin:0 auto}
+.pricing-main{background:rgba(255,255,255,0.5);border:1px solid rgba(0,0,0,0.06);border-radius:4px;padding:36px 32px;margin-top:28px}
+.pm-total-label{font-family:'Caveat',cursive;font-size:1.1rem;color:#c4694a;font-weight:600}
+.pm-total{font-family:'Frank Ruhl Libre',serif;font-size:3.2rem;font-weight:900;color:#2d2a26;margin:4px 0 4px}
+.pm-total-note{font-size:0.82rem;color:#a09888;margin-bottom:28px}
+.pm-items{display:flex;flex-direction:column;gap:0}
+.pm-item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(0,0,0,0.05)}
+.pm-item:last-child{border:none}
+.pm-item-name{font-size:0.92rem;font-weight:600;color:#2d2a26}
+.pm-item-desc{font-size:0.78rem;color:#8a7e6e;margin-top:2px}
+.pm-item-price{font-family:'Frank Ruhl Libre',serif;font-size:1.15rem;font-weight:700;color:#2d2a26;white-space:nowrap}
+.pricing-flex{margin-top:28px;padding-top:24px;border-top:1px dashed rgba(0,0,0,0.08)}
+.pricing-flex .pf-title{font-family:'Caveat',cursive;font-size:1.1rem;font-weight:600;color:#c4694a;margin-bottom:8px}
+.pricing-flex p{font-size:0.85rem;color:#6a6050;line-height:1.85}
+.ideas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:24px}
+.idea-chip{padding:14px;border:1px solid rgba(0,0,0,0.05);border-radius:4px;background:rgba(255,255,255,0.4)}
+.idea-chip .ic-title{font-size:0.84rem;font-weight:600;color:#2d2a26;margin-bottom:2px}
+.idea-chip .ic-desc{font-size:0.72rem;color:#a09888}
+.about-box{background:rgba(255,255,255,0.5);border:1px solid rgba(0,0,0,0.06);border-radius:4px;padding:28px;margin-top:28px}
+.about-box p{font-size:0.9rem;color:#4a4538;line-height:1.8}
+.cta-section{text-align:center;max-width:820px;margin:0 auto;padding:0 28px 80px 100px}
+.cta-section h2{font-family:'Frank Ruhl Libre',serif;font-size:1.8rem;font-weight:700;color:#2d2a26;margin-bottom:12px}
+.cta-section p{font-size:0.95rem;color:#6a6050;line-height:1.8;margin-bottom:8px}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;text-decoration:none;border-radius:50px;padding:14px 28px 14px 22px;font-family:'Heebo',sans-serif;font-size:0.95rem;font-weight:600;box-shadow:0 4px 16px rgba(37,211,102,0.3);transition:all 0.25s ease;margin-top:20px;direction:rtl}
+.cta-btn:hover{background:#1ebe5d;box-shadow:0 6px 20px rgba(37,211,102,0.4);transform:translateY(-2px)}
+.cta-btn svg{flex-shrink:0}
+.footer{text-align:center;padding:40px 28px;font-size:0.78rem;color:#a09888;border-top:1px dashed rgba(0,0,0,0.08);max-width:820px;margin:0 auto}
+@media(max-width:768px){
+body::after{display:none}
+.section,.divider,.hero,.cta-section,.footer{padding-left:24px;padding-right:24px}
+.hero{padding-top:60px}
+.hero h1{font-size:2rem}
+.stat-grid{grid-template-columns:repeat(2,1fr)}
+.pillar-grid{grid-template-columns:1fr}
+.timeline-track{grid-template-columns:1fr;gap:24px}
+.timeline-track::before{display:none}
+.ideas-grid{grid-template-columns:1fr 1fr}
+.pm-total{font-size:2.4rem}
+.person-box{padding:20px}
+#auth-gate .auth-card{padding:32px 24px}
+}
+@media print{body{background:white;background-image:none}body::after{display:none}.auth-user-bar{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- AUTH GATE — shown until user signs in with Google     -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="auth-gate">
+  <div class="auth-card">
+    <h1>Amy's Salon</h1>
+    <div class="subtitle">Gildoni Consultancy</div>
+    <p>המסמך הזה מוגן. יש להתחבר עם חשבון Google מאושר כדי לצפות בהצעה.</p>
+    <button class="google-btn" id="google-signin-btn" onclick="signInWithGoogle()">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#34A853" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#FBBC05" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      התחברות עם Google
+    </button>
+    <div class="error-msg" id="auth-error"></div>
+    <div class="loading" id="auth-loading">מתחבר...</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- USER BAR — shown when authenticated                  -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="auth-user-bar" id="user-bar" style="display:none">
+  <div class="user-info">
+    <img id="user-photo" src="" alt="">
+    <span id="user-name"></span>
+  </div>
+  <button onclick="signOut()">התנתק</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- PROPOSAL CONTENT — hidden until verified              -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="proposal-content">
+
+<!-- HERO -->
+<div class="hero" style="padding-top:140px">
+  <div class="draft">Gildoni Consultancy - April 2026</div>
+  <h1>Amy's Salon<br>הצעה לליווי עסקי ופיתוח</h1>
+  <div class="sub">ליווי מקצה לקצה: אסטרטגיה עסקית, נוכחות דיגיטלית, שיווק, מיתוג, צילום מקצועי, ובנייה טכנולוגית. הכל ממקום אחד, בכיוון אחד.</div>
+  <div class="meta">
+    <span>עבור עירן ודניאלה וייסמן</span>
+    <span>Gildoni Consultancy</span>
+    <span>אפריל 2026</span>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- WHAT I HEARD: PERSONAL -->
+<div class="section">
+  <div class="section-heading">
+    <div class="label">מה שמעתי</div>
+    <h2>לא רק את המילים - גם את מה שביניהן</h2>
+    <p>ישבנו ודיברנו שעה וחצי. הנה מה שהבנתי - לא רק על העסק, אלא גם עליכם.</p>
+  </div>
+
+  <!-- DANIELLA -->
+  <div class="person-box">
+    <h3>דניאלה</h3>
+    <p>עברת מסע מטורף. אחות בישראל, עבודות שלא התאימו לרמה שלך בהולנד, ואז קיבלת החלטה מטורפת ואמיצה - ללמוד מקצוע חדש מאפס, ולעשות את זה ברמה הכי גבוהה שיש. לא יוטיוב, לא קיצורים. שנה של התמחות בטופ, כנסים, קשרים עם הספריות הטובות בהולנד, הסמכה אמריקאית, ציוד בלי פשרות.</p>
+    <p>שמעתי שאת רוצה balance. לסיים בחמש וחצי, לצאת עם הכלבים לטיול בערב, ולהשאיר אנרגיה לחיים. את רוצה להתמקד במה שאת הכי טובה בו - לספר ולמכור ללקוחות בפרונט. ההתעסקות עם אסטרטגיה, טכנולוגיה, וניהול פרויקטים - את מעדיפה שמישהו אחר ייקח.</p>
+    <p>שמעתי גם על הבלוג שאת חולמת עליו - תוכן אקדמי ברמה גבוהה בעברית. הסבר למה אסור לגלח פומרניאן, מה זה Hand stripping ולמה זה חשוב, מה ההבדל בין ספרית שעברה הכשרה אמיתית לבין מי שלמדה מיוטיוב. את אמרת "אני אקדמאית ואני לא עושה שטויות" - ואני מאמין לך.</p>
+    <span class="quote">"אני רוצה להיות במספרה שלי ולספר ולדבר עם הלקוחות. זה מה שאני רוצה."</span>
+  </div>
+
+  <!-- EIRAN -->
+  <div class="person-box">
+    <h3>עירן</h3>
+    <p>שמעתי את המשפט "מיציתי את ההייטק" - ואני מזדהה איתו לגמרי. עשרים שנה בניהול פרויקטים, מספיק משחקים, מגיע לנקודה שבה רוצים לעשות משהו שטוב לנשמה וטוב לבריאות. אמרת ש"כל עוד זה התעסקות בדברים האלה ולא בדברים שלא אהבתי לעשות פעם - שמה תמצא אותי". וזה אומר הכל.</p>
+    <p>אתה ה-operator. הדוגסיטינג, הלוגיסטיקה, הפרויקטים, הבנייה. אתה גם מי שמוכן לקום בשש, לצאת עם הכלבים, ולהיות ה-assistant שמשחרר את דניאלה לעבודות המקצועיות. אתה חושב גדול - דיברת על מיקום שני, על להיות המספרה הכי טובה בצפון הולנד. ובמקביל, אתה מודע לזה שאתם בתהליך מעבר - משכירים לעצמאים - ושצריך מישהו שילווה את זה.</p>
+    <span class="quote">"אנחנו באמת שמים את כל יהבנו בדבר הזה."</span>
+  </div>
+
+  <!-- TOGETHER -->
+  <div class="person-box">
+    <h3>ביחד</h3>
+    <p>שניכם בני חמישים פחות או יותר, שלושה ילדים, ואחרי שנתיים של בנייה מאפס אתם מגיעים לנקודה שבה צריך לתרגם את כל ההשקעה לתזרים יציב. אמרתם שזה חלק מאוד חשוב בהכנסה המשפחתית - לא פרויקט צדדי, לא תחביב. זה הדבר האמיתי.</p>
+    <p>הייתה ביניכם אי-הסכמה קטנה על יעד ההכנסה - דניאלה אמרה 8,000, עירן דחף ל-10,000. דניאלה אמרה "עירן, אתה לא יכול להגיע לעשר מזה". שני המספרים ריאליים - וזה בדיוק מה שנבנה ביחד: מודל הכנסה מדויק שמבוסס על מספרים אמיתיים ולא על תקוות.</p>
+    <p>גם ראיתי מי אתם כאנשים. ספגתם ביטולים בגלל המלחמה בלי לגבות דמי ביטול. דניאלה, סיפרת על לינדה המנטורית שלך ואיך הצלחת להיכנס לעולם הספרות ההולנדי ולבנות קשרים אמיתיים עם קולגות. קראתם לעסק על שם איימי, הכלבה שנאלצתם להרדים לפני שעברתם לכאן. יש פה אהבה אמיתית לכלבים ולבעליהם - ואנשים מרגישים את זה.</p>
+  </div>
+
+  <div class="callout">
+    <strong>חלוקת עבודה שאני מכבד:</strong> דניאלה במספרה, בפרונט, ובמכירות - זה המגרש שלה. עירן על הפרויקטים, הבנייה, הרגולציה, והלוגיסטיקה - זה המגרש שלו. אני על האסטרטגיה, הטכנולוגיה, והליווי. הפגישות יהיו ביחד, אבל המשימות יחולקו ברור כדי שלא תהיה עומס יתר על אף אחד.
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- RED FLAGS -->
+<div class="section">
+  <div class="section-heading">
+    <div class="label">שני דברים שצריך לטפל בהם מוקדם</div>
+    <h2>מה עומד בין Amy's Salon ל-full capacity</h2>
+  </div>
+
+  <!-- FLAG 1: LANGUAGE -->
+  <div class="person-box">
+    <h3>1. מחסום השפה</h3>
+    <p>דניאלה, את העלית את זה בשיחה וזה מטריד אותך בצדק. הפלאיירים בהולנדית, אבל כשמישהו מתקשר - את עונה באנגלית. "איך הוא יקבל את זה?" שאלת. "זה קצת מרתיע."</p>
+    <p>זו בעיה אמיתית. הולנדים מצפים להולנדית, במיוחד באינטראקציה ראשונה עם עסק מקומי. שיחת טלפון באנגלית אחרי פלאייר בהולנדית עלולה להרגיש לא מתאימה.</p>
+    <p>אבל יש לזה פתרון טכנולוגי שלא רק פותר את הבעיה אלא הופך אותה ליתרון: מערכת זימון אונליין בהולנדית ובאנגלית. הלקוח בוחר תור, ממלא שאלון על הכלב שלו, מקבל אישור - הכל בהולנדית, בלי שיחת טלפון. האינטראקציה הראשונה הופכת מטלפונית לדיגיטלית - ועד שהלקוח מגיע פנים אל פנים, הוא כבר יודע מה לצפות ודניאלה כבר יודעת מה מצב הכלב.</p>
+    <p>ומה שמרגיש כחיסרון מול הלקוחות ההולנדים הופך ליתרון עצום מול שוק האקספטים. Hoofddorp מלאה בדוברי אנגלית עם כלבים וכוח קנייה גבוה - ואף מספרה באזור לא פונה אליהם באנגלית.</p>
+  </div>
+
+  <!-- FLAG 2: WEBSITE -->
+  <div class="person-box" style="margin-top:16px">
+    <h3>2. האתר צריך לשקף את הרמה</h3>
+    <p>הרמה של Amy's Salon - הציוד, החומרים, ההסמכה, הניסיון - היא יוצאת דופן. האתר צריך לשקף את זה. צריך אתר שכשלקוח פוטנציאלי נכנס אליו הוא מבין מיד שהוא מול מספרה ברמה הכי גבוהה. תמונות אמיתיות, תוכן מקצועי, מערכת הזמנות, חנות, ועמוד נפרד לכל שירות - טיפוח, דנטל, דוגסיטינג, day care, חנות.</p>
+    <p>לא פחות חשוב: האתר צריך להופיע כשמחפשים את מה שבאמת חשוב - "hondentrimmer Hoofddorp", "dog grooming Haarlemmermeer", "dental care honden". כל שירות צריך להיות ניתן לגילוי בנפרד, גם בגוגל וגם במנועי חיפוש AI. זה מה שיביא לקוחות חדשים.</p>
+  </div>
+
+  <!-- CONNECTION -->
+  <div class="callout green" style="margin-top:20px">
+    <p style="margin:0"><strong>שני הדברים האלה קשורים:</strong> האתר החדש פותר את שניהם בבת אחת. אתר מקצועי דו-לשוני עם מערכת הזמנות חכמה ישקף את הרמה האמיתית של Amy's Salon, יופיע בתוצאות החיפוש, יאפשר ללקוחות ההולנדים תהליך מסודר בהולנדית, ויפתח את הדלת לשוק האקספטים באנגלית. פתרון אחד, שתי בעיות.</p>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- BUSINESS SUMMARY -->
+<div class="section">
+  <div class="section-heading">
+    <div class="label">מה על השולחן</div>
+    <h2>העסק כפי שאני רואה אותו היום</h2>
+  </div>
+  <div class="notes-box">
+    <div class="notes-header"><h3>מה עובד</h3></div>
+    <ul class="notes-list">
+      <li><strong>מוצר ברמה שאין בשוק:</strong> הסמכה, ציוד, חומרים, ניקיון ברמה אמריקאית. שמפו ייעודי לכל סוג פרווה. חיטוי בין כל כלב. מספריים ב-200-250 יורו הזוג. "אני לא הולכת לאלי אקספרס, מה שחצי מהמספרות עושות"</li>
+      <li><strong>לקוחות שלא עוזבים:</strong> אפס נטישה בדוגסיטינג ובמספרה. כל לקוח שהגיע - חזר. הכלבים רצים מהרכב לדלת. זה הסימן הכי חזק שיש</li>
+      <li><strong>תפעול מסודר:</strong> ביטוח, רישיונות, הכל by the book. שני חדרים שמאפשרים עבודה מקבילית. חנות פיזית עם ספקים B2B חתומים</li>
+      <li><strong>מגוון שירותים:</strong> טיפוח, דנטל, דוגסיטינג, day care (רק הושק), חנות מוצרים. כל שירות הוא נקודת כניסה נפרדת ללקוחות - ושילובים חכמים ביניהם יכולים ליצור חבילות שאף מתחרה לא מציע</li>
+    </ul>
+  </div>
+
+  <div class="notes-box" style="margin-top:16px">
+    <div class="notes-header"><h3>מה חסר</h3></div>
+    <ul class="notes-list">
+      <li><strong>נוכחות דיגיטלית:</strong> האתר כמעט ריק. אפס נוכחות בגוגל. כשמישהו מחפש "hondentrimmer Hoofddorp" או "dog daycare Haarlemmermeer" או "dental care honden" - Amy's Salon לא מופיעה בשום מקום</li>
+      <li><strong>מנגנון הזמנות:</strong> הכל דרך טלפון ווואטסאפ. אין מערכת שמנהלת תורים, שולחת תזכורות, ומתאימה זמנים לפי סוג הכלב</li>
+      <li><strong>תוכנית עסקית מובנית:</strong> יודעים לאן רוצים להגיע אבל חסר מודל הכנסה מפורט, ניתוח עלויות, ויעדים מדידים</li>
+      <li><strong>מעבר משכירים לעצמאים:</strong> אמרתם בעצמכם "אנחנו לא באים מהעולם הזה כל כך". צריך ליווי בבניית העסק - תמחור, רגולציה, מיסוי, מבנה</li>
+    </ul>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- MARKET -->
+<div class="section">
+  <div class="section-heading">
+    <div class="label">מה אומר השוק</div>
+    <h2>ההזדמנות</h2>
+    <p>עשיתי מחקר שוק מקיף. התמונה חד משמעית.</p>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="num">1.7M</div><div class="lbl">כלבים בהולנד</div></div>
+    <div class="stat-card"><div class="num">&euro;1.8B</div><div class="lbl">שוק pet care הולנדי</div></div>
+    <div class="stat-card"><div class="num">+6%</div><div class="lbl">צמיחה שנתית</div></div>
+    <div class="stat-card"><div class="num">8-12</div><div class="lbl">מספרות באזור כולו</div></div>
+  </div>
+  <div class="notes-box" style="margin-top:28px">
+    <ul class="notes-list">
+      <li>באזור Haarlemmermeer כ-13,000 כלבים, רובם גזעים שדורשים טיפוח אינטנסיבי - תוצאה של גל ה-COVID</li>
+      <li>מספרות רבות בצפון הולנד סגורות ללקוחות חדשים עם רשימות המתנה של שבועות</li>
+      <li>הממוצע הארצי לגרומינג: ~&euro;60.50 לשעה. מספרות פרימיום: &euro;65-80. Hand stripping באמסטרדם: &euro;110-200 לסשן</li>
+      <li>Hoofddorp = מרכז אקספטים ליד סכיפהול. 700+ חברות בינלאומיות. אף מספרה באזור לא פונה אליהם באנגלית</li>
+      <li>ביקוש גדל, היצע מוגבל, תחרות חלשה דיגיטלית. מי שמגיע ראשון עם נוכחות מקצועית - תופס את השוק</li>
+    </ul>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- METHODOLOGY -->
+<div class="section">
+  <div class="section-heading">
+    <div class="label">הגישה</div>
+    <h2>איך נגיע משם לשם</h2>
+    <p>ליווי עסקי מקצה לקצה, לא פתרון נקודתי. חמישה תחומים מרכזיים, כל אחד מקבל תשומת לב שיטתית לאורך שלושת החודשים.</p>
+  </div>
+  <div class="pillar-grid">
+    <div class="pillar"><div class="p-num">01</div><h3>כלכלה ותמחור</h3><p>מודל הכנסה מפורט. ניתוח עלויות. בדיקת תמחור מול השוק. יעדים כלכליים ריאליים. מעקב שוטף.</p></div>
+    <div class="pillar"><div class="p-num">02</div><h3>נוכחות דיגיטלית</h3><p>אתר מקצועי דו-לשוני. מערכת זימון תורים. נוכחות בגוגל ובפלטפורמות חיפוש - לא רק "hondentrimmer" אלא גם "dog daycare", "dental care honden", "hondenpension". כל שירות שאתם מציעים צריך להיות ניתן לגילוי בנפרד, גם בגוגל וגם במנועי חיפוש AI.</p></div>
+    <div class="pillar"><div class="p-num">03</div><h3>שיווק וחשיפה</h3><p>תוכנית שיווק מובנית לכל שירות בנפרד ולעסק כמכלול: למי פונים, באיזה ערוצים, באיזה מסרים, ובאיזה תקציב. אסטרטגיית תוכן לרשתות חברתיות. קמפיינים ממוקדים.</p></div>
+    <div class="pillar"><div class="p-num">04</div><h3>ערוצי הכנסה וחבילות שירות</h3><p>מיפוי הזדמנויות מעבר לתספורת בודדת. בניית חבילות שירות ייחודיות שמשלבות בין מה שכבר יש (day care + טיפוח, פנסיון + תספורת, דנטל כתוספת קבועה). שיתופי פעולה אסטרטגיים.</p></div>
+    <div class="pillar"><div class="p-num">05</div><h3>מיתוג ותדמית</h3><p>צילומי תדמית מקצועיים עם ציוד ייעודי (mirrorless full-frame עם עדשה רחבה לחלל קטן). שפה ויזואלית עקבית שמשקפת את הרמה שקיימת בפנים.</p></div>
+  </div>
+  <div class="callout" style="margin-top:12px">
+    <p style="margin:0"><strong>סוגיות רגולטוריות, מיסוי, ומבנה עסקי:</strong> אם יעלו סוגיות כאלה במהלך הליווי (וסביר שיעלו) - אפנה אתכם לבעלי המקצוע המתאימים מתוך הרשת שלי. זה לא תחום שאני לוקח עליו אחריות, אבל אני כן דואג שתגיעו לאנשים הנכונים.</p>
+  </div>
+  <div class="callout" style="margin-top:28px">
+    <p style="margin:0">כל פגישה נבנית סביב התחומים האלה. כל פגישה נגמרת עם משימות ברורות - מי עושה מה, עד מתי. התקדמות נמדדת כל שבועיים. <strong>שיטתי, מובנה, עם אחריות.</strong></p>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- TIMELINE -->
+<div class="section">
+  <div class="section-heading">
+    <div class="label">לוח זמנים</div>
+    <h2>שלושה חודשים, שלושה שלבים</h2>
+  </div>
+  <div class="timeline-track">
+    <div class="tl-step"><div class="tl-week">חודש 1</div><div class="tl-dot"></div><div class="tl-title">מיפוי ותשתיות</div><div class="tl-desc">יום שלם אצלכם בעסק. איסוף נתונים. מודל הכנסה. תוכנית שיווק. הקמת נוכחות דיגיטלית. צילומי תדמית. תחילת בניית אתר.</div></div>
+    <div class="tl-step"><div class="tl-week">חודש 2</div><div class="tl-dot"></div><div class="tl-title">בנייה והשקה</div><div class="tl-desc">השקת אתר + מערכת זימון. קמפיין דיגיטלי ראשון. שיתופי פעולה. אסטרטגיית תוכן לרשתות חברתיות.</div></div>
+    <div class="tl-step"><div class="tl-week">חודש 3</div><div class="tl-dot"></div><div class="tl-title">מדידה ואופטימיזציה</div><div class="tl-desc">מעקב תוצאות. מה עבד ומה לא. השקת ערוצי הכנסה נוספים. חנות אונליין. תוכנית המשך.</div></div>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- WHAT'S INCLUDED -->
+<div class="section">
+  <div class="section-heading">
+    <div class="label">מה מקבלים</div>
+    <h2>הכל כלול, הכל ממקום אחד</h2>
+    <p>בדרך כלל צריך לשכור יועץ עסקי, בונה אתרים, צלם, ויועץ שיווק בנפרד. פה מקבלים מערכת אחת, מראש אחד, בכיוון אחד.</p>
+  </div>
+  <div class="notes-box">
+    <div class="notes-header"><h3>כלול בליווי</h3></div>
+    <ul class="notes-list">
+      <li><strong>יום היכרות מעמיק בעסק:</strong> אני מגיע אליכם ליום שלם. מבין את התפעול, רואה את המספרה, את הכלבים, את הדינמיקה ביניכם. בלי זה אי אפשר לייעץ ברצינות</li>
+      <li><strong>6 פגישות אסטרטגיות:</strong> אחת לשבועיים, 60 דקות, שלושתנו. מובנות סביב חמישה תחומים מרכזיים</li>
+      <li><strong>זמינות בוואטסאפ:</strong> בין הפגישות, לשאלות, התלבטויות, ועדכונים</li>
+      <li><strong>תוכנית עסקית כתובה:</strong> מודל הכנסה מפורט, ניתוח עלויות, יעדים, KPIs</li>
+      <li><strong>תוכנית שיווק מובנית:</strong> ערוצים, מסרים, תקציבים, לוח זמנים - לכל שירות בנפרד ולעסק כמכלול</li>
+      <li><strong>אתר מקצועי חדש:</strong> mobile-first (מותאם קודם כל לטלפון, כי שם רוב הלקוחות יפגשו אתכם), דו-לשוני (NL/EN), SEO, Google Business Profile. עמוד נפרד לכל שירות כדי שכל אחד יהיה ניתן לגילוי בחיפוש</li>
+      <li><strong>מערכת זימון תורים חכמה:</strong> שאלון intake אוטומטי, הערכת זמנים לפי גזע, הולנדית ואנגלית. פותר את מחסום השפה ומשחרר את דניאלה מניהול תורים בטלפון</li>
+      <li><strong>צילומי תדמית מקצועיים:</strong> כולל שכירת ציוד ייעודי לחלל קטן. המספרה, החנות, דניאלה בעבודה, הכלבים. תמונות ברמה לאתר, רשתות, ופרסום</li>
+      <li><strong>חנות אונליין:</strong> קטלוג מוצרים, תשלום (iDEAL), שילוח. מוכנה למכירה - גם בשביל הספקים שביקשו לראות חנות לפני שהסכימו ל-B2B</li>
+      <li><strong>פלטפורמת בלוג:</strong> התשתית לבלוג שדניאלה חולמת עליו. עברית ואנגלית, SEO, מוכנה למונטיזציה</li>
+    </ul>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- WEBSITE DETAILS -->
+<div class="section">
+  <div class="section-heading">
+    <div class="label">על האתר</div>
+    <h2>לא סתם עוד אתר - כלי עבודה אמיתי</h2>
+    <p>האתר שנבנה ביחד הוא לא חלון ראווה סטטי. הוא מערכת שעובדת בשבילכם 24/7 - מושכת לקוחות, מנהלת תורים, מוכרת מוצרים, ובונה מותג.</p>
+  </div>
+
+  <div class="notes-box">
+    <div class="notes-header"><h3>מה כלול באתר</h3></div>
+    <ul class="notes-list">
+      <li><strong>עיצוב מותאם אישית:</strong> לא תבנית גנרית. עיצוב שמשקף את הרמה של Amy's Salon - פרימיום, נקי, מקצועי. mobile-first - מותאם קודם כל לטלפון, כי שם רוב הלקוחות יפגשו אתכם</li>
+      <li><strong>דו-לשוני מלא (NL/EN):</strong> כל עמוד בהולנדית ובאנגלית. הלקוח בוחר שפה. פותר את מחסום השפה לגמרי</li>
+      <li><strong>עמוד נפרד לכל שירות:</strong> טיפוח, דנטל, דוגסיטינג, day care, חנות. כל עמוד מותאם ל-SEO כדי שכל שירות יהיה ניתן לגילוי בנפרד בגוגל ובמנועי חיפוש AI</li>
+      <li><strong>מערכת זימון תורים חכמה:</strong> שאלון intake אוטומטי שמתאים את משך הטיפול לסוג הכלב והשירות. הלקוח קובע תור בעצמו, בהולנדית או באנגלית, בלי שיחת טלפון</li>
+      <li><strong>חנות אונליין:</strong> קטלוג מוצרים מסודר, תשלום מאובטח עם iDEAL, מנגנון שילוח. מוכנה למכירה מיום ההשקה</li>
+      <li><strong>בלוג מקצועי:</strong> מערכת ניהול תוכן שדניאלה יכולה לעדכן בעצמה, בעברית ובאנגלית. SEO מובנה. מוכנה למונטיזציה דרך שיווק שותפים וקישורים למוצרים</li>
+      <li><strong>גלריית עבודות:</strong> Before/After, תמונות מהמספרה, סרטונים. התוכן שהלקוחות רוצים לראות לפני שהם קובעים תור</li>
+      <li><strong>Google Business Profile:</strong> הקמה מלאה ואופטימיזציה. כדי שכשמחפשים "hondentrimmer Hoofddorp" - Amy's Salon תופיע</li>
+      <li><strong>רספונסיבי לגמרי:</strong> נראה מושלם בנייד, בטאבלט, ובמחשב</li>
+      <li><strong>מהיר ומאובטח:</strong> SSL/HTTPS מובנה, טעינה מהירה, אחסון אמין עם uptime של 99.9%</li>
+    </ul>
+  </div>
+
+  <div class="pillar-grid" style="margin-top:20px">
+    <div class="person-box" style="margin:0">
+      <h3>בעלות מלאה שלכם</h3>
+      <p>הקוד של האתר שלכם לגמרי. אין נעילת ספק, אין מנוי חודשי לפלטפורמה. אם מחר תרצו מפתח אחר - הכל מתועד, הכל מוכן להעברה. אפס תלות.</p>
+    </div>
+    <div class="person-box" style="margin:0">
+      <h3>שותף טכני לטווח ארוך</h3>
+      <p>אני לא בונה ונעלם. אני נקודת הקשר שלכם לכל דבר טכני - אדם אחד שמכיר את הקוד, מכיר אתכם, וזמין. תקלות קריטיות? טיפול תוך 48 שעות.</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- PRICING -->
+<div class="section">
+  <div class="section-heading">
+    <div class="label">ההשקעה</div>
+    <h2>בלי הפתעות, בלי אותיות קטנות</h2>
+  </div>
+  <div class="pricing-main">
+    <div class="pm-total-label">סה"כ ליווי - 3 חודשים</div>
+    <div class="pm-total">&euro;5,460</div>
+    <div class="pm-total-note">לא כולל מע"מ &middot; חיוב חודשי: &euro;1,820 x 3 &middot; ההצעה תקפה ל-30 יום</div>
+    <div class="pm-items">
+      <div class="pm-item"><div><div class="pm-item-name">ליווי אסטרטגי ועסקי</div><div class="pm-item-desc">יום היכרות + 6 פגישות + וואטסאפ + תוכנית עסקית + תוכנית שיווק + KPIs</div></div><div class="pm-item-price">&euro;2,880</div></div>
+      <div class="pm-item"><div><div class="pm-item-name">אתר מקצועי + מערכת זימון</div><div class="pm-item-desc">עיצוב מותאם, דו-לשוני, mobile-first, SEO, Google Business, שאלון intake אוטומטי</div></div><div class="pm-item-price">&euro;1,800</div></div>
+      <div class="pm-item"><div><div class="pm-item-name">צילומי תדמית מקצועיים</div><div class="pm-item-desc">כולל שכירת ציוד ייעודי. מספרה, חנות, עבודה, כלבים</div></div><div class="pm-item-price" style="color:#3a7d55">כלול</div></div>
+      <div class="pm-item"><div><div class="pm-item-name">חנות אונליין</div><div class="pm-item-desc">קטלוג, תשלום, שילוח, iDEAL</div></div><div class="pm-item-price" style="color:#3a7d55">כלול</div></div>
+      <div class="pm-item"><div><div class="pm-item-name">פלטפורמת בלוג</div><div class="pm-item-desc">תוכן, SEO, מוכנה למונטיזציה</div></div><div class="pm-item-price" style="color:#3a7d55">כלול</div></div>
+      <div class="pm-item"><div><div class="pm-item-name">תחזוקה שנתית</div><div class="pm-item-desc">אחסון, אבטחה, גיבויים, עדכוני מערכת, SSL, uptime monitoring</div></div><div class="pm-item-price">&euro;200<span style="font-size:0.7rem;color:#a09888;font-weight:400">/שנה</span></div></div>
+      <div class="pm-item"><div><div class="pm-item-name">פיתוח עתידי</div><div class="pm-item-desc">כל פיצ'ר חדש מתומחר בהצעה כתובה מראש - ללא הפתעות</div></div><div class="pm-item-price">&euro;75<span style="font-size:0.7rem;color:#a09888;font-weight:400">/שעה</span></div></div>
+    </div>
+    <div class="pricing-flex">
+      <div class="pf-title">למה הכל ביחד ולא בנפרד</div>
+      <p>כשיועץ אחד מכיר את העסק, בונה את האתר, מצלם, וכותב את תוכנית השיווק - כל חלק מחזק את האחר. האתר משקף את האסטרטגיה. התמונות מספרות את הסיפור הנכון. מערכת הזימון פותרת את הבעיות שזיהינו ביחד. אין תרגום בין ארבעה ספקים שלא מכירים אחד את השני.</p>
+      <p style="margin-top:8px">אם הייתם שוכרים יועץ עסקי, בונה אתרים, צלם, ויועץ שיווק בנפרד - <strong>העלות הייתה &euro;7,500-10,000, בלי לדבר על הזמן שמושקע בתיאום.</strong></p>
+    </div>
+    <div class="pricing-flex">
+      <div class="pf-title">על גמישות ושקיפות</div>
+      <p>הדומיין amysalon.nl כבר בבעלותכם - מצוין. תחזוקה שנתית (&euro;200) מכסה אחסון, אבטחה, גיבויים, ועדכוני מערכת. כל שינוי או פיצ'ר חדש מעבר למה שמוגדר כאן מתומחר ב-&euro;75 לשעה, עם הצעה כתובה לפני שמתחילים. שעון לא רץ בלי אישור.</p>
+      <p style="margin-top:8px"><strong>שירותי צד שלישי:</strong> במידה ונשתמש בשירותים חיצוניים כמו מערכת תשלומים (Mollie/iDEAL), פלטפורמת חנות, או כלי שיווק - העלויות שלהם נגבות ישירות מכם על ידי הספקים. אני לא גובה עמלה על זה. (לצפייה: מדובר בעלויות נמוכות יחסית - עמלת תשלום של כ-0.29&euro; לעסקה, תוכנות בטווח של &euro;20-30 לחודש - שמחזירות את עצמן מהר מאוד.)</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- FINANCIALS -->
+<div class="section">
+  <div class="section-heading">
+    <div class="label">המספרים</div>
+    <h2>הדרך ל-&euro;8,000-10,000</h2>
+    <p>על בסיס מה שאמרתם בשיחה ומה שמראה מחקר השוק.</p>
+  </div>
+  <div class="notes-box">
+    <ul class="notes-list">
+      <li><strong>מספרה (5 כלבים/יום):</strong> ~&euro;96 לכלב x 20 ימי עבודה = &euro;9,600 ברוטו</li>
+      <li><strong>פנסיון (4 כלבים/לילה ממוצע):</strong> &euro;40 x 4 x 30 = &euro;4,800 ברוטו</li>
+      <li><strong>דנטל, חנות, שירותים נוספים:</strong> &euro;1,000-2,000 ברוטו</li>
+      <li><strong>סה"כ ברוטו:</strong> &euro;15,000-16,000 בחודש</li>
+    </ul>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(0,0,0,0.06)">
+      <p style="font-size:0.88rem;color:#6a6050;line-height:1.8">מהסכום הזה מפחיתים מע"מ (21%), מתכלים (~&euro;10/כלב), הוצאות קבועות (ביטוח, חשמל, מים), ומס הכנסה. חלק מהמספרים האלה עדיין צריך לברר ולחשב בדיוק - <strong>וזה בדיוק מה שנעשה ביחד בחודש הראשון.</strong></p>
+      <p style="font-size:0.88rem;color:#6a6050;line-height:1.8;margin-top:8px">היעד של &euro;8,000-10,000 נטו ריאלי, אבל דורש תכנון מדויק. 20 ימי עבודה ולא 22 - כי דניאלה רוצה לסיים בחמש וחצי ולהשאיר ערב לחיים. תוכנית שמובילה לשחיקה היא לא תוכנית טובה.</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- BEYOND -->
+<div class="section">
+  <div class="section-heading">
+    <div class="label">הלאה</div>
+    <h2>מה אחרי 3 חודשים</h2>
+    <p>שלושה חודשים זה ההתחלה. האתר שנבנה הוא תשתית שיכולה לצמוח הרבה מעבר לנוכחות בסיסית. הנה כמה כיוונים אפשריים:</p>
+  </div>
+
+  <div class="notes-box">
+    <div class="notes-header"><h3>האתר כפלטפורמה - מה שאפשר לבנות בהמשך</h3><div class="date">&euro;75/שעה, עם הצעה מראש</div></div>
+    <ul class="notes-list">
+      <li><strong>אזור אישי ללקוחות:</strong> כל לקוח עם Login משלו. רואה את ההיסטוריה של הכלב שלו, מקבל תזכורות לטיפול הבא, יכול לקבוע תורים, ולהזמין מוצרים. זה מה שהופך מספרה לפלטפורמה</li>
+      <li><strong>CMS לניהול לקוחות:</strong> מערכת שמאפשרת לכם לנהל את בסיס הלקוחות - לראות מי היה מתי, מי צריך תזכורת, מי לא חזר. כלי שימור שעובד בשבילכם</li>
+      <li><strong>תוכנית "חבר מביא חבר":</strong> לקוח שמפנה חבר מקבל הטבה (הנחה, מוצר, נקודות). הלקוחות שלכם הופכים לשגרירים. מנגנון שמייצר לקוחות חדשים בלי פרסום</li>
+      <li><strong>מערכת נקודות ונאמנות:</strong> לקוחות צוברים נקודות על כל ביקור ורכישה, ומממשים אותן בחנות או בשירותים. יוצר תמריץ לחזור ולקנות</li>
+      <li><strong>משלוחים ממותגים:</strong> מוצרים שנשלחים ללקוחות עם אריזה ממותגת של Amy's Salon וכרטיס אישי. דניאלה הזכירה את זה בשיחה - בהתחלה אפשר לעשות את זה ידנית, ובהמשך לחבר למנגנון drop-shipping מול הספקים</li>
+    </ul>
+  </div>
+
+  <div class="ideas-grid" style="margin-top:20px">
+    <div class="idea-chip"><div class="ic-title">מודל מנויים</div><div class="ic-desc">הכנסה קבועה ויציבה</div></div>
+    <div class="idea-chip"><div class="ic-title">Private Label</div><div class="ic-desc">מוצרים תחת המותג</div></div>
+    <div class="idea-chip"><div class="ic-title"><a href="https://www.s-bb.nl/bedrijven/erkenning/leerbedrijf-worden/" target="_blank" rel="noopener" style="color:#2d2a26;text-decoration:underline">Leerbedrijf</a></div><div class="ic-desc">הכרה כעסק מאמן לסטאז'רים, עם סובסידיה</div></div>
+    <div class="idea-chip"><div class="ic-title">איסוף והחזרה</div><div class="ic-desc">שירות ברדיוס 15 ק"מ</div></div>
+    <div class="idea-chip"><div class="ic-title">מיקום שני</div><div class="ic-desc">התרחבות עתידית</div></div>
+    <div class="idea-chip"><div class="ic-title">ועוד...</div><div class="ic-desc">רעיונות שנפתח ביחד</div></div>
+  </div>
+
+  <p style="font-size:0.84rem;color:#a09888;margin-top:16px">כל הפיצ'רים העתידיים הם מחוץ ל-scope של ההצעה הנוכחית ויתומחרו בנפרד (&euro;75/שעה, עם הצעה כתובה מראש). אלה דוגמאות למה שאפשרי - הכיוון המדויק ייקבע לפי מה שנלמד בשלושת החודשים הראשונים.</p>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- ABOUT -->
+<div class="section">
+  <div class="section-heading">
+    <div class="label">Gildoni Consultancy</div>
+    <h2>קצת עליי</h2>
+  </div>
+  <div class="about-box">
+    <p>כמעט 20 שנה בהובלת מוצר וצמיחה בחברות כמו Booking.com, Mambu ו-SimilarWeb. סגן נשיא מוצר בשתי חברות SaaS אירופיות. בוגר תוכנית Strategy Execution של Harvard Business School. היום מלווה עסקים באסטרטגיה, בונה פלטפורמות דיגיטליות מקצה לקצה, ומצלם מקצועי.</p>
+    <p style="margin-top:12px">אני מכיר אתכם כבר כמעט חמש שנים - מהימים הראשונים בהולנד. הייתי שם כשעירן חיפש את הדרך שלו, הייתי שם כשהדוגסיטינג התחיל כרעיון קטן בבית, והייתי שם כשדניאלה החליטה ללכת על ההתמחות. ראיתי מקרוב את הנחישות, את חוסר הפשרנות על איכות, ואת האהבה לכלבים שעומדת מאחורי הכל. ההצעה הזו היא לא תחילתו של קשר חדש - היא ההמשך הטבעי של דרך שכבר עברנו חלק ממנה ביחד.</p>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>מה עכשיו?</h2>
+  <p>עירן ודניאלה, אנחנו מכירים כבר כמעט חמש שנים. הייתי שם מההתחלה ואני יודע שאתם הולכים להצליח. עכשיו הגיע הזמן לעשות את זה רשמי, מובנה, ועם תוכנית. השאלה היא כמה מהר ועד כמה גבוה.</p>
+  <a class="cta-btn" href="https://wa.me/31644295691?text=%D7%99%D7%90%D7%9C%D7%9C%D7%94">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    יאללה, בואו נתחיל
+  </a>
+  <p style="margin-top:32px;font-size:0.95rem">חג שמח,</p>
+  <p style="font-weight:600;color:#c4694a;font-size:1.1rem">אלון</p>
+  <p style="font-size:0.82rem;color:#a09888;margin-top:4px;direction:ltr">alon@gildoni.com &middot; +31 6 44295691</p>
+</div>
+
+<div class="footer">סודי &middot; Gildoni Consultancy &middot; April 2026</div>
+
+</div><!-- end #proposal-content -->
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- FIREBASE SDK + AUTH LOGIC                            -->
+<!-- ══════════════════════════════════════════════════════ -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
+
+  // ┌──────────────────────────────────────────────────┐
+  // │  FIREBASE CONFIG — Replace with your project's   │
+  // │  values from Firebase Console > Project Settings  │
+  // └──────────────────────────────────────────────────┘
+  const firebaseConfig = {
+    apiKey: "AIzaSyAreUsWpN0MNwtO-uRcYg1e5Jtb-qci08Q",
+    authDomain: "amys-b6d7f.web.app",
+    projectId: "amys-b6d7f",
+    storageBucket: "amys-b6d7f.firebasestorage.app",
+    messagingSenderId: "424712332447",
+    appId: "1:424712332447:web:7e6e22249acde61ac42eaa"
+  };
+
+  // ┌──────────────────────────────────────────────────┐
+  // │  ALLOWED EMAILS — Only these can view the page   │
+  // │  Add/remove emails as needed (lowercase)         │
+  // └──────────────────────────────────────────────────┘
+  const ALLOWED_EMAILS = [
+    "alon@gildoni.com",
+    "info@amysalon.nl",
+    "eiran.w@gmail.com",
+  ];
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  const gate = document.getElementById('auth-gate');
+  const content = document.getElementById('proposal-content');
+  const userBar = document.getElementById('user-bar');
+  const errorEl = document.getElementById('auth-error');
+  const loadingEl = document.getElementById('auth-loading');
+  const signinBtn = document.getElementById('google-signin-btn');
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.style.display = 'block';
+    loadingEl.style.display = 'none';
+    signinBtn.style.display = '';
+  }
+
+  function grantAccess(user) {
+    gate.style.display = 'none';
+    content.style.display = 'block';
+    userBar.style.display = 'flex';
+    document.getElementById('user-photo').src = user.photoURL || '';
+    document.getElementById('user-name').textContent = user.displayName || user.email;
+  }
+
+  function denyAccess() {
+    gate.style.display = 'flex';
+    content.style.display = 'none';
+    userBar.style.display = 'none';
+  }
+
+  function isAllowed(email) {
+    if (ALLOWED_EMAILS.length === 0) return true; // If no allowlist set, allow all authenticated users
+    return ALLOWED_EMAILS.includes(email.toLowerCase());
+  }
+
+  // Listen for auth state changes
+  onAuthStateChanged(auth, (user) => {
+    if (user && isAllowed(user.email)) {
+      grantAccess(user);
+    } else if (user) {
+      fbSignOut(auth);
+      showError('אין לך גישה למסמך הזה. פנה לאלון לקבלת הרשאה.');
+    } else {
+      denyAccess();
+    }
+  });
+
+  // Google sign-in via popup
+  window.signInWithGoogle = async function() {
+    errorEl.style.display = 'none';
+    loadingEl.style.display = 'block';
+    signinBtn.style.display = 'none';
+    try {
+      const result = await signInWithPopup(auth, provider);
+      if (!isAllowed(result.user.email)) {
+        await fbSignOut(auth);
+        showError('אין לך גישה למסמך הזה. פנה לאלון לקבלת הרשאה.');
+      }
+    } catch (err) {
+      console.error('Auth error:', err.code, err.message);
+      if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+        loadingEl.style.display = 'none';
+        signinBtn.style.display = '';
+      } else {
+        showError('שגיאה: ' + err.code);
+      }
+    }
+  };
+
+  // Sign out
+  window.signOut = function() {
+    fbSignOut(auth);
+  };
+</script>
+
+</body>
+</html>
