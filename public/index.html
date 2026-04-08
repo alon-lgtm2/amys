@@ -530,7 +530,7 @@ body::after{display:none}
 <!-- ══════════════════════════════════════════════════════ -->
 <!-- FIREBASE SDK + AUTH LOGIC                            -->
 <!-- ══════════════════════════════════════════════════════ -->
-<script src="https://accounts.google.com/gsi/client" async></script>
+<script src="https://accounts.google.com/gsi/client" async onload="window.__gsiReady=true; window.__gsiOnReady && window.__gsiOnReady()"></script>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
   import { getAuth, GoogleAuthProvider, signInWithCredential, onAuthStateChanged, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
@@ -614,18 +614,22 @@ body::after{display:none}
   };
 
   // Render Google sign-in button using GIS
-  window.addEventListener('load', () => {
-    if (typeof google !== 'undefined') {
-      google.accounts.id.initialize({
-        client_id: "424712332447-gl2ponoen9cp7rs4evde556jf3hghrmc.apps.googleusercontent.com",
-        callback: handleGoogleSignIn,
-      });
-      google.accounts.id.renderButton(
-        document.getElementById('google-signin-btn'),
-        { theme: 'outline', size: 'large', shape: 'rectangular', text: 'signin_with', locale: 'he' }
-      );
-    }
-  });
+  function initGsi() {
+    google.accounts.id.initialize({
+      client_id: "424712332447-gl2ponoen9cp7rs4evde556jf3hghrmc.apps.googleusercontent.com",
+      callback: handleGoogleSignIn,
+    });
+    google.accounts.id.renderButton(
+      document.getElementById('google-signin-btn'),
+      { theme: 'outline', size: 'large', shape: 'rectangular', text: 'signin_with', locale: 'he' }
+    );
+  }
+
+  if (window.__gsiReady) {
+    initGsi();
+  } else {
+    window.__gsiOnReady = initGsi;
+  }
 
   window.signOut = function() {
     fbSignOut(auth);
